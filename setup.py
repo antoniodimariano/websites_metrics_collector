@@ -5,8 +5,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name='websitesmetricscollectorbeta',
-    version='1.0.2',
+    name='websites_metrics_collector_beta',
+    version='1.0.3',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=["requests","confluent-kafka-producers-wrapper","aiohttp"],
     url='',

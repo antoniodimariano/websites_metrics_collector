@@ -39,9 +39,12 @@ async def process_websites_to_fetch(request):
         return web.json_response({"message": unexpected_error}, status=403, content_type='application/json',
                                  dumps=json.dumps)
 
-
-if __name__ == "__main__":
+def start():
     app = web.Application()
     app.router.add_post('/api/v1/websites_metrics', process_websites_to_fetch)
     web.run_app(app, host=os.environ.get('SERVICE_HOST', '127.0.0.1'),
                 port=int(os.environ.get('SERVICE_LISTEN_PORT', '8080')))
+
+
+if __name__ == "__main__":
+    start()
