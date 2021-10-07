@@ -32,16 +32,19 @@ jobs:
             python3 -m unittest tests/test_driver_class.py
             python3 -m unittest tests/test_fetching_info_from_websites.py
             python3 -m unittest tests/test_patterns_in_text.py
-
+      - run:
+          name : Pubish package
+          command: |
+            python3 -m pip install --upgrade build
+            pip3 install twine
+            python -m build
+             python3 -m twine upload dist/*
       - store_test_results:
           path: test-results
       - store_artifacts:
           path: test-results
           destination: tr1
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  build_and_publish:
     jobs:
       - build

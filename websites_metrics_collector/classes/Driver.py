@@ -1,4 +1,4 @@
-from communication.webpages_fetcher import fetch_list_of_urls
+from websites_metrics_collector.communication.webpages_fetcher import fetch_list_of_urls
 from confluent_kafka_producers_wrapper.producer import Producer
 import logging
 from typing import Optional,Tuple

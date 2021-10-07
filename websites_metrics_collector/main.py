@@ -1,5 +1,5 @@
 from aiohttp import web
-from classes.Driver import Driver
+from websites_metrics_collector.classes.Driver import Driver
 import json, asyncio, os, logging
 
 logger = logging.getLogger()
@@ -7,7 +7,7 @@ logging.basicConfig(
     format='%(asctime)s:%(levelname)s:%(message)s', level=logging.INFO
 )
 
-driver = Driver(topic=os.environ.get('topic_for_producing_metrics', 'websites_metrics'),skip_producer_init=os.environ.get('skip_producer_init',0))
+driver = Driver(topic=os.environ.get('topic_for_producing_metrics', 'websites_metrics'), skip_producer_init=os.environ.get('skip_producer_init', 0))
 
 
 async def process_websites_to_fetch(request):
@@ -39,9 +39,12 @@ async def process_websites_to_fetch(request):
         return web.json_response({"message": unexpected_error}, status=403, content_type='application/json',
                                  dumps=json.dumps)
 
-
-if __name__ == "__main__":
+def start():
     app = web.Application()
     app.router.add_post('/api/v1/websites_metrics', process_websites_to_fetch)
     web.run_app(app, host=os.environ.get('SERVICE_HOST', '127.0.0.1'),
                 port=int(os.environ.get('SERVICE_LISTEN_PORT', '8080')))
+
+
+if __name__ == "__main__":
+    start()

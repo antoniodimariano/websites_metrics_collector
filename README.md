@@ -3,7 +3,6 @@
 
 #### Author: Antonio Di Mariano - antonio.dimariano@gmail.com
 
-
 # Description
 
 This service is part of the Websites Monitoring Application, a small distributed application that periodically produces and collects metrics about the availability of one or more websites.
@@ -19,7 +18,7 @@ method to accept a list of URLs to fetch and process.
 
 ## Infra Requirements
 
-This services requires an Apache Kafka Broker with the Schema Registry and AVRO support. 
+This service requires an Apache Kafka Broker with the Schema Registry and AVRO support. 
 In the `terraform` directory you will find the necessary scripts to create a token and a schema registry on Aiven ( https://aiven.com )
 
 If you want to automate the creation of topics and schemas, you can use Terraform. Otherwise, you can do it yourself from the console.
@@ -95,6 +94,53 @@ The default topic `websites_metrics` has the following schemas
     "type": "record"
 }
 ```
+
+
+
+# Requirements
+
+* Python >=3.8
+
+# Run
+
+If you want to run from the source code, go to the directory websites_metrics_collector and run `python main`
+
+If you want to use it as package (suggested method) install pip3 install websites_metrics_collector
+
+Then
+
+1. Set the ENV variables as show in this README.md
+2. Then use it this way
+
+```python
+def start_service():
+    from websites_metrics_collector.main import start
+    start()
+```
+
+
+# Dependencies
+
+* requests==2.26.0
+* confluent-kafka-producers-wrapper==0.0.6  ( More information on https://github.com/antoniodimariano/confluent_kafka_producers_wrapper )
+* aiohttp==3.7.4.post0
+
+# Run test
+
+**NOTE**: for simplicity, I am assuming you have a running Kafka broker for testing purposes
+
+
+`python -m unittest tests/test_driver_class.py`
+
+`python -m unittest test/test_fetching_info_from_websites.py`
+
+`python -m unittest test/test_kafka_producer.py`
+
+`python -m unittest test/test_patterns_in_text.py`
+
+`python -m unittest test/test_rest_server.py`
+
+**NOTE** In order to run the `test_rest_api` you have to start the service first
 
 
 
@@ -204,36 +250,6 @@ Response
 }
 ```
 
-# Requirements
-
-* Python >=3.8
-
-# Run
-
-`python main`
-
-# Dependencies
-
-* requests==2.26.0
-* confluent-kafka-producers-wrapper==0.0.6  ( More information on https://github.com/antoniodimariano/confluent_kafka_producers_wrapper )
-* aiohttp==3.7.4.post0
-
-# Run test
-
-**NOTE**: for simplicity I am assuming you have a running Kafka broker for testing purposes
-
-
-`python -m unittest tests/test_driver_class.py`
-
-`python -m unittest test/test_fetching_info_from_websites.py`
-
-`python -m unittest test/test_kafka_producer.py`
-
-`python -m unittest test/test_patterns_in_text.py`
-
-`python -m unittest test/test_rest_server.py`
-
-**NOTE** In order to run the `test_rest_api` you have to start the service first
 
 # Service ENV configuration
 
