@@ -26,7 +26,6 @@ jobs:
             cd librdkafka && ./configure --prefix /usr && make && sudo make install
       - python/install-packages:
           pkg-manager: pip
-
       - run:
           name: Run tests
           command: |
@@ -35,7 +34,7 @@ jobs:
             python3 -m unittest tests/test_patterns_in_text.py
       - run:
           name : Pubish package
-          command: |  # create whl and use pipenv to install dependencies
+          command: |
             python3 -m pip install --upgrade build
             pip3 install twine
             python -m build
@@ -45,10 +44,7 @@ jobs:
       - store_artifacts:
           path: test-results
           destination: tr1
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  build_and_publish:
     jobs:
       - build
