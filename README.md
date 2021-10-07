@@ -16,6 +16,97 @@ For each record, a message is produced to an Apache Kafka Topic. This service ex
 method to accept a list of URLs to fetch and process.
 
 
+## Overview of the Websites Monitoring Application
+
+The application is made of three services that can run in different systems.
+
+There are main two services. 
+
+The first one https://github.com/antoniodimariano/websites_metrics_collector is responsible for fetching and collecting the information from a list of URLs. The information collected is
+
+HTTP Status returned HTTP response time regexp pattern that is expected to be found on the HTML content.
+For each record, a message is produced to an Apache Kafka Topic. This service exposes a REST API Service with a POST method to accept a list of URLs to fetch and process.
+
+The second service is https://github.com/antoniodimariano/metrics_consumer that is responsible for consuming messages about metrics being produced to an Apache Kafka Avro Topic by a different service. The main action of this service is to store the incoming message into a PostgreSQL database.
+
+The last one is a Celery Beat based service https://github.com/antoniodimariano/crontab_request that periodically send a POST request with a list of URLS to the `websites_metrics_collector`
+
+So, to run all the whole application,  you don't need to clone the three repos,  You can use these two public python packages
+
+1. https://pypi.org/project/websites-metrics-consumer/ 
+2. https://pypi.org/project/websites-metrics-collector/
+
+Create two `python` applications. One will consume messages 
+
+`pip3 install websites-metrics-consumer`
+
+The other will produce metrics 
+
+`pip3 install websites-metrics-collector`
+
+In order to produce metrics, the https://github.com/antoniodimariano/websites_metrics_collector runs a REST Server with a `POST` `/api/v1/websites_metrics` endpoint that accepts a list of URLs to fetch. 
+For the complete documentation go here https://github.com/antoniodimariano/websites_metrics_collector/blob/master/README.md
+
+The last application (https://github.com/antoniodimariano/crontab_request) uses Celery Beat to periodically run the task of reading a list or URLs from a local `json` file and will send it to as payload.
+of the `POST` request to `/api/v1/websites_metrics`
+It requires `Redis` as broker.
+
+You can decide not to use https://github.com/antoniodimariano/crontab_request and implements your own way of requesting a list or URLs to monitor. 
+As long as you send a POST Request to the endpoint `/api/v1/websites_metrics` metrics will be collected, messages will be produced and data will be stored. 
+I decided to use Celery and not, for instance, a simple timer implemented with Thread or 3-party libs because Celery is robust, scalable and production ready.
+I know it comes at the price of having a broker, but I prefer to pay a small price for a significant advance. Not to mention, I am a big fan of Celery!
+
+
+# How to Run this service
+
+
+# Requirements
+
+* Python >=3.8
+
+# Run
+
+If you want to run from the source code, go to the directory websites_metrics_collector and run `python main`
+
+If you want to use it as package (suggested method) install pip3 install websites_metrics_collector
+
+Then
+
+1. Set the ENV variables as show in this README.md
+2. Then use it this way
+
+```python
+def start_service():
+    from websites_metrics_collector.main import start
+    start()
+```
+
+
+# Dependencies
+
+* requests==2.26.0
+* confluent-kafka-producers-wrapper==0.0.6  ( More information on https://github.com/antoniodimariano/confluent_kafka_producers_wrapper )
+* aiohttp==3.7.4.post0
+
+# Run test
+
+**NOTE**: for simplicity, I am assuming you have a running Kafka broker for testing purposes
+
+
+`python -m unittest tests/test_driver_class.py`
+
+`python -m unittest test/test_fetching_info_from_websites.py`
+
+`python -m unittest test/test_kafka_producer.py`
+
+`python -m unittest test/test_patterns_in_text.py`
+
+`python -m unittest test/test_rest_server.py`
+
+**NOTE** In order to run the `test_rest_api` you have to start the service first
+
+
+
 ## Infra Requirements
 
 This service requires an Apache Kafka Broker with the Schema Registry and AVRO support. 
@@ -94,55 +185,6 @@ The default topic `websites_metrics` has the following schemas
     "type": "record"
 }
 ```
-
-
-
-# Requirements
-
-* Python >=3.8
-
-# Run
-
-If you want to run from the source code, go to the directory websites_metrics_collector and run `python main`
-
-If you want to use it as package (suggested method) install pip3 install websites_metrics_collector
-
-Then
-
-1. Set the ENV variables as show in this README.md
-2. Then use it this way
-
-```python
-def start_service():
-    from websites_metrics_collector.main import start
-    start()
-```
-
-
-# Dependencies
-
-* requests==2.26.0
-* confluent-kafka-producers-wrapper==0.0.6  ( More information on https://github.com/antoniodimariano/confluent_kafka_producers_wrapper )
-* aiohttp==3.7.4.post0
-
-# Run test
-
-**NOTE**: for simplicity, I am assuming you have a running Kafka broker for testing purposes
-
-
-`python -m unittest tests/test_driver_class.py`
-
-`python -m unittest test/test_fetching_info_from_websites.py`
-
-`python -m unittest test/test_kafka_producer.py`
-
-`python -m unittest test/test_patterns_in_text.py`
-
-`python -m unittest test/test_rest_server.py`
-
-**NOTE** In order to run the `test_rest_api` you have to start the service first
-
-
 
 ## Rest APIs
 
