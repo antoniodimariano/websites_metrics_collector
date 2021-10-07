@@ -1,5 +1,5 @@
 from aiohttp import web
-from classes.Driver import Driver
+from websites_metrics_collector.classes.Driver import Driver
 import json, asyncio, os, logging
 
 logger = logging.getLogger()
@@ -7,7 +7,7 @@ logging.basicConfig(
     format='%(asctime)s:%(levelname)s:%(message)s', level=logging.INFO
 )
 
-driver = Driver(topic=os.environ.get('topic_for_producing_metrics', 'websites_metrics'),skip_producer_init=os.environ.get('skip_producer_init',0))
+driver = Driver(topic=os.environ.get('topic_for_producing_metrics', 'websites_metrics'), skip_producer_init=os.environ.get('skip_producer_init', 0))
 
 
 async def process_websites_to_fetch(request):

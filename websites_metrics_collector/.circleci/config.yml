@@ -26,13 +26,20 @@ jobs:
             cd librdkafka && ./configure --prefix /usr && make && sudo make install
       - python/install-packages:
           pkg-manager: pip
+
       - run:
           name: Run tests
           command: |
             python3 -m unittest tests/test_driver_class.py
             python3 -m unittest tests/test_fetching_info_from_websites.py
             python3 -m unittest tests/test_patterns_in_text.py
-
+      - run:
+          name : Pubish package
+          command: |  # create whl and use pipenv to install dependencies
+            python3 -m pip install --upgrade build
+            pip3 install twine
+            python -m build
+             python3 -m twine upload dist/*
       - store_test_results:
           path: test-results
       - store_artifacts:

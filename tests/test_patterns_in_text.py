@@ -1,6 +1,6 @@
 import unittest
 import requests
-from helpers.regex_functions import check_patterns_in_webpage
+from websites_metrics_collector.helpers.regex_functions import check_patterns_in_webpage
 
 
 class TestPattern(unittest.TestCase):

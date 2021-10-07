@@ -1,6 +1,6 @@
 import unittest
 from unittest import IsolatedAsyncioTestCase
-from communication import webpages_fetcher
+from websites_metrics_collector.communication import webpages_fetcher
 class Test(IsolatedAsyncioTestCase):
     """
     This Class tests the fetch_list_of_urls() async method used to fetch URLs

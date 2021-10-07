@@ -1,5 +1,5 @@
 from unittest import IsolatedAsyncioTestCase
-from classes.Driver import Driver
+from websites_metrics_collector.classes.Driver import Driver
 
 
 class Test(IsolatedAsyncioTestCase):

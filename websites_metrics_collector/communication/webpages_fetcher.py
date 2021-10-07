@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 import time
-from helpers.regex_functions import check_patterns_in_webpage
+from websites_metrics_collector.helpers.regex_functions import check_patterns_in_webpage
 from collections import namedtuple
 from typing import Tuple, NamedTuple
 
