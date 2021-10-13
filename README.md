@@ -1,4 +1,6 @@
 [![CircleCI](https://circleci.com/gh/antoniodimariano/websites_metrics_collector/tree/master.svg?style=svg&circle-token=809ef5a8af2efd28ede2d0385c31666146570ac5)](https://circleci.com/gh/antoniodimariano/websites_metrics_collector/tree/master)
+![PyPI - License](https://img.shields.io/pypi/l/websites-metrics-collector)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/websites-metrics-collector)
 # Websites Metrics Collector
 
 #### Author: Antonio Di Mariano - antonio.dimariano@gmail.com

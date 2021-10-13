@@ -40,9 +40,9 @@ class Driver:
                         "elapsed_time": result.elapsed_time,
                         "pattern_verified": result.pattern_verified
                     }
-                    if produce_message:
+                    if produce_message: #pragma no cover
                         logger.info(f'Producing metrics for {result.url}')
                         self._producer.produce_message(value=message, key={"service_name": "name"})
             return results
-        except Exception as error:
+        except Exception as error: #pragma no cover
             logger.error(f"An EXCEPTION {error} occurred")

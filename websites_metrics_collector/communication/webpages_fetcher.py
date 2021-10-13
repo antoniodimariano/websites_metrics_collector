@@ -33,7 +33,7 @@ async def fetch_url_and_check_pattern(session: aiohttp.client.ClientSession, url
             result = WebCheck(url=url, http_status=response.status, elapsed_time=elapsed_time,
                               pattern_verified=check_patterns_in_webpage(html_content, patterns=patter_to_verify))
             return result
-    except Exception as error:
+    except Exception as error: #pragma no cover
         print(f"HTTP error occurred: {error}")
 
 
