@@ -9,6 +9,7 @@ orbs:
   # Orb commands and jobs help you with common scripting around a language/tool
   # so you dont have to copy and paste it everywhere.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/python
+  codecov: codecov/codecov@1.0.2
   python: circleci/python@1.2
 
 # Define a job to be invoked later in a workflow.
@@ -17,6 +18,10 @@ jobs:
   build:
     docker:
       - image: cimg/python:3.8
+    parameters:
+      publish_pypi:
+        type: string
+        default: ""
     steps:
       - checkout
       - run:
@@ -27,23 +32,24 @@ jobs:
       - python/install-packages:
           pkg-manager: pip
       - run:
-          name: Run tests
+          name: Run tests and Run Coverage
           command: |
-            python3 -m unittest tests/test_driver_class.py
-            python3 -m unittest tests/test_fetching_info_from_websites.py
-            python3 -m unittest tests/test_patterns_in_text.py
-      - run:
-          name : Pubish package
-          command: |
-            python3 -m pip install --upgrade build
-            pip3 install twine
-            python -m build
-             python3 -m twine upload dist/*
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test-results
-          destination: tr1
+              pip install coverage
+              coverage run -m unittest tests/all_tests.py
+              coverage xml
+      - codecov/upload:
+          file: './coverage.xml'
+          token: $CODECOV_TOKEN
+      - when:
+          condition: <<parameters.publish_pypi>>
+          steps:
+            - run:
+                name: Pubish package
+                command: |
+                  python3 -m pip install --upgrade build
+                  pip3 install twine
+                  python -m build
+                   python3 -m twine upload dist/*
 workflows:
   build_and_publish:
     jobs:
